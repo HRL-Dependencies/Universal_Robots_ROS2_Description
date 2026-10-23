@@ -1,15 +1,15 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://wiki.ros.org/xacro" name="robotiq_gripper">
-    <xacro:macro name="robotiq_gripper" params="parent *origin sim:=false tf_prefix">
-
-
-
-        <!-- ros2 control include -->
+    <xacro:macro name="robotiq_gripper" params="parent *origin sim:=false tf_prefix gripper_connection:=urcap com_port:=/dev/ttyUSB0 use_fake_hardware:=false">
         <xacro:include filename="$(find ur_description)/urdf/robotiq_gripper.ros2_control.xacro" />
-        <!-- ros2 control instance -->
-        <xacro:robotiq_gripper_ros2_control
-          name="robotiq_gripper_control"
-          com_port="/tmp/ttyUR"/>
+        <!-- URCap owns the tool serial port; only USB uses this hardware plugin. -->
+        <xacro:if value="${use_fake_hardware or gripper_connection == 'usb'}">
+          <xacro:robotiq_gripper_ros2_control
+            name="robotiq_gripper_control"
+            tf_prefix="${tf_prefix}"
+            com_port="${com_port}"
+            use_fake_hardware="${use_fake_hardware}"/>
+        </xacro:if>
     
 
 
